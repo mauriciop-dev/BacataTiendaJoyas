@@ -1,0 +1,8 @@
+{
+  "name": "Bacata Gold - Agentic Commerce MVP",
+  "description": "A luxury jewelry platform with Universal Commerce Protocol (UCP) and AI-driven shopping experiences featuring Colombian emeralds.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}
