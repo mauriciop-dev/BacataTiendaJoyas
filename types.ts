@@ -5,6 +5,7 @@ export interface Product {
   description: string;
   price: number;
   currency: string;
+  category: 'anillos' | 'collares' | 'oro';
   material: string;
   gem_type: string;
   carats: string;

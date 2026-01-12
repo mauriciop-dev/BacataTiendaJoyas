@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Product, UCPManifest, UCPCapabilityType } from './types';
-import { MOCK_PRODUCTS, BRAND_NAME } from './constants';
+import { MOCK_PRODUCTS, BRAND_NAME, BRAND_LOGO } from './constants';
 import Header from './components/Header';
 import ProductDetail from './components/ProductDetail';
 import AdminPanel from './components/AdminPanel';
@@ -12,18 +12,11 @@ const App: React.FC = () => {
   const [products, setProducts] = useState<Product[]>(MOCK_PRODUCTS);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isAssistantOpen, setIsAssistantOpen] = useState(false);
-
-  // UCP Discovery Mock
-  const getUCPManifest = (): UCPManifest => ({
-    version: '1.0',
-    name: BRAND_NAME,
-    description: 'Protocolo de Comercio Agéntico de Bacata Gold',
-    capabilities: [
-      { type: UCPCapabilityType.PRODUCT_DISCOVERY, endpoint: '/api/ucp/discovery', description: 'Búsqueda por atributos técnicos' },
-      { type: UCPCapabilityType.CHECKOUT, endpoint: '/api/ucp/checkout', description: 'Checkout seguro vía token' }
-    ],
-    auth: { type: 'Bearer', flow: 'OIDC' }
-  });
+  
+  // Admin Authentication State
+  const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(false);
+  const [adminCreds, setAdminCreds] = useState({ username: '', password: '' });
+  const [loginError, setLoginError] = useState('');
 
   const handleNavigate = (v: 'home' | 'product' | 'admin') => {
     setView(v);
@@ -43,6 +36,25 @@ const App: React.FC = () => {
     setView('product');
   };
 
+  const handleAdminLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (adminCreds.username === 'admin' && adminCreds.password === 'bacata123') {
+      setIsAdminAuthenticated(true);
+      setLoginError('');
+    } else {
+      setLoginError('Credenciales incorrectas. Intente de nuevo.');
+    }
+  };
+
+  // Helper to group and slice products for the home page
+  const getCategorizedHomeItems = () => {
+    const categories: ('anillos' | 'collares' | 'oro')[] = ['anillos', 'collares', 'oro'];
+    return categories.map(cat => ({
+      name: cat === 'oro' ? 'Oro Puro & Laminado' : (cat === 'anillos' ? 'Colección de Anillos' : 'Collares de Lujo'),
+      items: products.filter(p => p.category === cat).slice(0, 2)
+    }));
+  };
+
   return (
     <div className="min-h-screen bg-background-light dark:bg-background-dark transition-colors duration-500">
       <Header onNavigate={handleNavigate} />
@@ -51,23 +63,32 @@ const App: React.FC = () => {
         {view === 'home' && (
           <div className="max-w-[1280px] mx-auto px-6 py-12">
             <section className="text-center mb-16 animate-fadeIn">
-              <h1 className="text-5xl font-display font-bold mb-4">Piezas Maestras</h1>
-              <p className="text-gray-500 max-w-2xl mx-auto">Cada joya es única, certificada y diseñada para perdurar por generaciones.</p>
+              <h1 className="text-5xl font-display font-bold mb-4">Bacata Gold</h1>
+              <p className="text-gray-500 max-w-2xl mx-auto">La excelencia de la minería colombiana transformada en piezas de arte eterno.</p>
             </section>
             
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-              {products.map(p => (
-                <div key={p.id} className="group cursor-pointer flex flex-col gap-4 animate-slideUp" onClick={() => handleSelectProduct(p)}>
-                  <div className="aspect-[4/5] bg-slate-200 rounded-xl overflow-hidden relative border border-transparent group-hover:border-primary/20 transition-all shadow-sm">
-                    <div className="w-full h-full bg-cover bg-center group-hover:scale-105 transition-transform duration-700" style={{ backgroundImage: `url("${p.image_urls[0]}")` }}></div>
-                    <button className="absolute bottom-4 left-4 right-4 bg-white/90 backdrop-blur text-primary py-3 rounded-lg font-bold translate-y-12 group-hover:translate-y-0 transition-transform shadow-xl">
-                      Ver Detalles
-                    </button>
+            <div className="space-y-20">
+              {getCategorizedHomeItems().map((catSection, idx) => (
+                <div key={idx} className="animate-fadeIn">
+                  <div className="flex items-center justify-between mb-8 border-b border-primary/10 pb-4">
+                    <h2 className="text-3xl font-display font-bold text-slate-900 dark:text-white">{catSection.name}</h2>
+                    <button className="text-primary font-bold text-sm uppercase tracking-widest hover:underline">Ver Todo</button>
                   </div>
-                  <div className="text-center">
-                    <p className="text-[10px] uppercase tracking-widest text-gold font-bold mb-1">{p.gem_type}</p>
-                    <h3 className="text-lg font-display font-bold">{p.name}</h3>
-                    <p className="text-primary font-bold mt-1">${p.price.toLocaleString()} {p.currency}</p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-12">
+                    {catSection.items.map(p => (
+                      <div key={p.id} className="group cursor-pointer flex flex-col md:flex-row gap-6 bg-white dark:bg-slate-800/50 p-6 rounded-2xl shadow-sm hover:shadow-xl transition-all border border-transparent hover:border-gold/20" onClick={() => handleSelectProduct(p)}>
+                        <div className="w-full md:w-1/2 aspect-square bg-slate-200 rounded-xl overflow-hidden relative">
+                          <div className="w-full h-full bg-cover bg-center group-hover:scale-105 transition-transform duration-700" style={{ backgroundImage: `url("${p.image_urls[0]}")` }}></div>
+                        </div>
+                        <div className="w-full md:w-1/2 flex flex-col justify-center">
+                          <p className="text-[10px] uppercase tracking-widest text-gold font-bold mb-1">{p.gem_type}</p>
+                          <h3 className="text-2xl font-display font-bold mb-2">{p.name}</h3>
+                          <p className="text-slate-500 text-sm mb-4 line-clamp-2">{p.description}</p>
+                          <p className="text-primary text-xl font-bold">${p.price.toLocaleString()} {p.currency}</p>
+                          <button className="mt-6 w-full md:w-max bg-primary text-white px-8 py-3 rounded-lg font-bold text-sm">Explorar Pieza</button>
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 </div>
               ))}
@@ -86,15 +107,53 @@ const App: React.FC = () => {
         )}
 
         {view === 'admin' && (
-          <AdminPanel 
-            products={products} 
-            onAddProduct={handleAddProduct} 
-            onUpdateStock={handleUpdateStock} 
-          />
+          !isAdminAuthenticated ? (
+            <div className="min-h-[70vh] flex items-center justify-center px-6">
+              <div className="bg-white dark:bg-slate-800 p-10 rounded-3xl shadow-2xl w-full max-w-md border border-gold/20 animate-slideUp">
+                <div className="flex flex-col items-center mb-8">
+                  <div className="text-primary mb-4">{BRAND_LOGO}</div>
+                  <h2 className="text-2xl font-display font-bold">Acceso Administrativo</h2>
+                  <p className="text-sm text-slate-500">Ingrese sus credenciales para continuar</p>
+                </div>
+                <form onSubmit={handleAdminLogin} className="space-y-6">
+                  <div>
+                    <label className="block text-xs font-bold uppercase text-slate-500 mb-2">Usuario</label>
+                    <input 
+                      type="text" 
+                      className="w-full bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 focus:ring-primary focus:border-primary"
+                      value={adminCreds.username}
+                      onChange={e => setAdminCreds({...adminCreds, username: e.target.value})}
+                      placeholder="admin"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold uppercase text-slate-500 mb-2">Contraseña</label>
+                    <input 
+                      type="password" 
+                      className="w-full bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 focus:ring-primary focus:border-primary"
+                      value={adminCreds.password}
+                      onChange={e => setAdminCreds({...adminCreds, password: e.target.value})}
+                      placeholder="••••••••"
+                    />
+                  </div>
+                  {loginError && <p className="text-red-500 text-xs font-bold">{loginError}</p>}
+                  <button type="submit" className="w-full bg-primary text-white py-4 rounded-xl font-bold shadow-lg hover:bg-opacity-90 transition-all">
+                    Iniciar Sesión
+                  </button>
+                </form>
+              </div>
+            </div>
+          ) : (
+            <AdminPanel 
+              products={products} 
+              onAddProduct={handleAddProduct} 
+              onUpdateStock={handleUpdateStock} 
+            />
+          )
         )}
       </main>
 
-      {/* Footer (Simplified) */}
+      {/* Footer */}
       <footer className="mt-20 border-t border-primary/10 py-20 px-6 bg-white dark:bg-background-dark">
         <div className="max-w-[1280px] mx-auto grid grid-cols-1 md:grid-cols-4 gap-12">
           <div className="col-span-1 md:col-span-2">
@@ -120,16 +179,12 @@ const App: React.FC = () => {
         />
       )}
 
-      {/* Floating Action Button for AI (when not in detail or closed) */}
       {!isAssistantOpen && (
         <button 
           onClick={() => setIsAssistantOpen(true)}
           className="fixed bottom-6 right-6 size-16 bg-gold text-white rounded-full shadow-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all z-50 group"
         >
           <span className="material-symbols-outlined text-3xl">smart_toy</span>
-          <span className="absolute right-full mr-4 bg-white text-gold text-xs font-bold py-2 px-4 rounded-lg shadow-xl opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap border border-gold/20">
-            ¿Cómo puedo ayudarte?
-          </span>
         </button>
       )}
     </div>
