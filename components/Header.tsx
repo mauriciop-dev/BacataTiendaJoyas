@@ -3,7 +3,7 @@ import React from 'react';
 import { BRAND_LOGO, BRAND_NAME } from '../constants';
 
 interface HeaderProps {
-  onNavigate: (view: 'home' | 'product' | 'admin') => void;
+  onNavigate: (view: 'home' | 'product' | 'admin' | 'anillos' | 'collares' | 'oro') => void;
 }
 
 const Header: React.FC<HeaderProps> = ({ onNavigate }) => {
@@ -17,9 +17,9 @@ const Header: React.FC<HeaderProps> = ({ onNavigate }) => {
         
         <nav className="hidden lg:flex items-center gap-10">
           <button onClick={() => onNavigate('home')} className="hover:text-primary transition-colors text-sm font-semibold uppercase tracking-wider">Inicio</button>
-          <a href="#" className="hover:text-primary transition-colors text-sm font-semibold uppercase tracking-wider">Anillos</a>
-          <a href="#" className="hover:text-primary transition-colors text-sm font-semibold uppercase tracking-wider">Collares</a>
-          <button onClick={() => onNavigate('admin')} className="hover:text-primary transition-colors text-sm font-semibold uppercase tracking-wider">Admin</button>
+          <button onClick={() => onNavigate('anillos')} className="hover:text-primary transition-colors text-sm font-semibold uppercase tracking-wider">Anillos</button>
+          <button onClick={() => onNavigate('collares')} className="hover:text-primary transition-colors text-sm font-semibold uppercase tracking-wider">Collares</button>
+          <button onClick={() => onNavigate('oro')} className="hover:text-primary transition-colors text-sm font-semibold uppercase tracking-wider">Oro</button>
         </nav>
 
         <div className="flex items-center gap-6">
@@ -28,7 +28,11 @@ const Header: React.FC<HeaderProps> = ({ onNavigate }) => {
             <input className="bg-transparent border-none focus:ring-0 text-sm placeholder:text-primary/70 w-32" placeholder="Buscar..." type="text"/>
           </div>
           <div className="flex gap-4">
-            <button className="flex items-center justify-center size-10 rounded-full hover:bg-primary/10 transition-colors">
+            <button 
+              onClick={() => onNavigate('admin')}
+              className="flex items-center justify-center size-10 rounded-full hover:bg-primary/10 transition-colors"
+              title="Panel Administrativo"
+            >
               <span className="material-symbols-outlined">person</span>
             </button>
             <button className="flex items-center justify-center size-10 rounded-full hover:bg-primary/10 transition-colors relative">
