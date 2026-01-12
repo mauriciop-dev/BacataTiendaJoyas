@@ -2,7 +2,8 @@
 import { GoogleGenAI, Type, FunctionDeclaration } from "@google/genai";
 import { Product } from "../types";
 
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY || "" });
+// Always initialize with the latest API key from environment
+const getAI = () => new GoogleGenAI({ apiKey: process.env.API_KEY || "" });
 
 const productDiscoveryTool: FunctionDeclaration = {
   name: "searchProducts",
@@ -19,6 +20,7 @@ const productDiscoveryTool: FunctionDeclaration = {
 };
 
 export const createAgentChat = (products: Product[]) => {
+  const ai = getAI();
   return ai.models.generateContent({
     model: "gemini-3-flash-preview",
     config: {
@@ -34,11 +36,12 @@ export const createAgentChat = (products: Product[]) => {
       `,
       tools: [{ functionDeclarations: [productDiscoveryTool] }]
     },
-    contents: [] // Will be managed in the UI component
+    contents: [] 
   });
 };
 
 export const getAIResponse = async (prompt: string, products: Product[]) => {
+  const ai = getAI();
   const response = await ai.models.generateContent({
     model: "gemini-3-flash-preview",
     contents: prompt,
@@ -47,4 +50,35 @@ export const getAIResponse = async (prompt: string, products: Product[]) => {
     }
   });
   return response.text;
+};
+
+/**
+ * Generates a high-quality product image using the gemini-2.5-flash-image model.
+ */
+export const generateProductImage = async (productName: string, description: string): Promise<string | null> => {
+  const ai = getAI();
+  const prompt = `A professional, high-end commercial product photograph of ${productName}. ${description}. The lighting should be luxury studio style with soft shadows, focus on the gold and gem textures. White minimalist background. 4k resolution, hyper-realistic.`;
+  
+  try {
+    const response = await ai.models.generateContent({
+      model: 'gemini-2.5-flash-image',
+      contents: {
+        parts: [{ text: prompt }],
+      },
+      config: {
+        imageConfig: {
+          aspectRatio: "1:1"
+        }
+      }
+    });
+
+    const part = response.candidates?.[0]?.content?.parts.find(p => p.inlineData);
+    if (part?.inlineData) {
+      return `data:${part.inlineData.mimeType};base64,${part.inlineData.data}`;
+    }
+    return null;
+  } catch (error) {
+    console.error("Image generation failed:", error);
+    return null;
+  }
 };

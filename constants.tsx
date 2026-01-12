@@ -34,7 +34,7 @@ export const MOCK_PRODUCTS: Product[] = [
     id: "a2",
     category: "anillos",
     name: "Solitario Imperial",
-    description: "Diamante certificado en montura de oro blanco.",
+    description: "Diamante certificado en montura de oro blanco de alto brillo.",
     price: 5200,
     currency: "USD",
     material: "Oro 18k Blanco",
@@ -43,13 +43,13 @@ export const MOCK_PRODUCTS: Product[] = [
     origin: "Sudáfrica",
     certificate_id: "BG-88210",
     stock: 2,
-    image_urls: ["https://images.unsplash.com/photo-1603561591411-071c4f703932?auto=format&fit=crop&q=80&w=800"]
+    image_urls: ["https://images.unsplash.com/photo-1573408301185-9146fe634ad0?auto=format&fit=crop&q=80&w=800"]
   },
   {
     id: "a3",
     category: "anillos",
     name: "Alianza Eterna",
-    description: "Banda texturizada de oro rosa con incrustaciones de esmeraldas pequeñas.",
+    description: "Banda texturizada de oro rosa con incrustaciones de esmeraldas pequeñas talladas a mano.",
     price: 1200,
     currency: "USD",
     material: "Oro 18k Rosa",
@@ -58,7 +58,7 @@ export const MOCK_PRODUCTS: Product[] = [
     origin: "Colombia",
     certificate_id: "BG-77321",
     stock: 10,
-    image_urls: ["https://images.unsplash.com/photo-1598560912005-5976593dc35b?auto=format&fit=crop&q=80&w=800"]
+    image_urls: ["https://images.unsplash.com/photo-1599643477877-537ef5278531?auto=format&fit=crop&q=80&w=800"]
   },
   // COLLARES
   {
@@ -80,7 +80,7 @@ export const MOCK_PRODUCTS: Product[] = [
     id: "c2",
     category: "collares",
     name: "Gargantilla Real",
-    description: "Incrustaciones de esmeraldas y diamantes en cadena de oro fino.",
+    description: "Incrustaciones de esmeraldas y diamantes en cadena de oro fino de 18k.",
     price: 8900,
     currency: "USD",
     material: "Oro 18k Amarillo",
@@ -95,7 +95,7 @@ export const MOCK_PRODUCTS: Product[] = [
     id: "c3",
     category: "collares",
     name: "Pendant Minimalista",
-    description: "Cadena delgada con dije de esmeralda redonda.",
+    description: "Cadena delgada con dije de esmeralda redonda de color verde profundo.",
     price: 950,
     currency: "USD",
     material: "Oro 14k",
@@ -126,7 +126,7 @@ export const MOCK_PRODUCTS: Product[] = [
     id: "o2",
     category: "oro",
     name: "Lámina de Oro Laminado",
-    description: "Lámina técnica de alta calidad para orfebrería profesional.",
+    description: "Lámina técnica de alta calidad de 14k para orfebrería profesional.",
     price: 450,
     currency: "USD",
     material: "Oro Laminado 14k",
@@ -141,7 +141,7 @@ export const MOCK_PRODUCTS: Product[] = [
     id: "o3",
     category: "oro",
     name: "Gránulos de Oro Fino",
-    description: "Gránulos ideales para fundición y creación de piezas personalizadas.",
+    description: "Gránulos ideales para fundición y creación de piezas personalizadas de 22k.",
     price: 1100,
     currency: "USD",
     material: "Oro 22k",
@@ -150,6 +150,6 @@ export const MOCK_PRODUCTS: Product[] = [
     origin: "Colombia",
     certificate_id: "BG-G1003",
     stock: 30,
-    image_urls: ["https://images.unsplash.com/photo-1610375461246-83df859d849d?auto=format&fit=crop&q=80&w=800"]
+    image_urls: ["https://images.unsplash.com/photo-1589131008221-97443e62a433?auto=format&fit=crop&q=80&w=800"]
   }
 ];
